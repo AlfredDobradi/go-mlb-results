@@ -1,0 +1,32 @@
+hash: 513ff6177ca6dcd7a6f0db1397627d24f2db2dbf4158f9bc3901e9bab6140d04
+updated: 2018-04-19T10:59:51.581639185+01:00
+imports:
+- name: github.com/AndreasBriese/bbloom
+  version: 28f7e881ca57bc00e028f9ede9f0d9104cfeef5e
+- name: github.com/dgraph-io/badger
+  version: 69611218c7078be6de16f4ea13fb256e701b6b73
+  subpackages:
+  - options
+  - protos
+  - skl
+  - table
+  - "y"
+- name: github.com/dgryski/go-farm
+  version: 2de33835d10275975374b37b2dcfd22c9020a1f5
+- name: github.com/golang/protobuf
+  version: e09c5db296004fbe3f74490e84dcd62c3c5ddb1b
+  subpackages:
+  - proto
+- name: github.com/pkg/errors
+  version: 816c9085562cd7ee03e7f8188a1cfd942858cded
+- name: golang.org/x/net
+  version: d41e8174641f662c5a2d1c7a5f9e828788eb8706
+  subpackages:
+  - context
+  - internal/timeseries
+  - trace
+- name: golang.org/x/sys
+  version: 3ccc7e5779793fd54564baf60c51bf017955e0ba
+  subpackages:
+  - unix
+testImports: []
