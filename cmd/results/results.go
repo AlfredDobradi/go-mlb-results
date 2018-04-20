@@ -46,12 +46,10 @@ func main() {
 	next := counter % len(games)
 
 	selected := games[next]
-	fmt.Printf("%s %d : %d %s\n", selected.Teams["away"].Team.TeamName, selected.Teams["away"].Score, selected.Teams["home"].Score, selected.Teams["home"].Team.TeamName)
 
-	backend.DB.Update(func(txn *badger.Txn) error {
-		txn.Set([]byte("counter"), []byte(strconv.Itoa(counter)))
-		return nil
-	})
+	var ex exporter.Plain
+	ex.Options = options
+	selected.Export(ex)
 
 	err = backend.SetCounter(counter)
 	internal.Must(err, "backend: counter: set:")

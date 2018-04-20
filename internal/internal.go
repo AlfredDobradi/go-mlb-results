@@ -30,6 +30,11 @@ type Game struct {
 	} `json:"teams"`
 }
 
+func (g Game) Export(f Exporter) {
+	s := f.Export(g)
+	fmt.Println(s)
+}
+
 type Date struct {
 	Games      []Game `json:"games"`
 	DateString string `json:"date"`
@@ -44,4 +49,8 @@ func Must(err error, prefix string) {
 		log.Printf("%s\n%+v", prefix, err)
 		os.Exit(1)
 	}
+}
+
+type Exporter interface {
+	Export(Game) string
 }
