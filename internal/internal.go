@@ -6,11 +6,13 @@ import (
 	"os"
 )
 
+// Options is a struct that holds app settings
 type Options struct {
 	Date   []byte
 	Colors bool
 }
 
+// Game represents a single game's data
 type Game struct {
 	ID       uint64 `json:"gamePk"`
 	Link     string `json:"link"`

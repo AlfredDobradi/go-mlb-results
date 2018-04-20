@@ -6,10 +6,12 @@ import (
 	"github.com/alfreddobradi/go-mlb-results/internal"
 )
 
+// I3Blocks is the wrapper around the specific functionality
 type I3Blocks struct {
 	Options internal.Options
 }
 
+// Export returns the data formatted for I3Blocks
 func (e I3Blocks) Export(g internal.Game) string {
 	home := g.Teams["home"]
 	away := g.Teams["away"]

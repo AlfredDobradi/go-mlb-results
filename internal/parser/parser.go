@@ -9,6 +9,7 @@ import (
 	"github.com/alfreddobradi/go-mlb-results/internal"
 )
 
+// Parse gets the contents of a URL and unmarshals it in a struct
 func Parse(date []byte) (internal.Root, error) {
 	var root internal.Root
 	url := fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=%s&hydrate=team", date)

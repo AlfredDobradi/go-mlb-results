@@ -6,10 +6,12 @@ import (
 	"github.com/alfreddobradi/go-mlb-results/internal"
 )
 
+// Plain is the wrapper around plain-text functionality
 type Plain struct {
 	Options internal.Options
 }
 
+// Export returns the data in plain-text format
 func (e Plain) Export(g internal.Game) string {
 	home := g.Teams["home"]
 	away := g.Teams["away"]
