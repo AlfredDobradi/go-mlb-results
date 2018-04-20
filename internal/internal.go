@@ -1,5 +1,16 @@
 package internal
 
+import (
+	"fmt"
+	"log"
+	"os"
+)
+
+type Options struct {
+	Date   []byte
+	Colors bool
+}
+
 type Game struct {
 	ID       uint64 `json:"gamePk"`
 	Link     string `json:"link"`
@@ -26,4 +37,11 @@ type Date struct {
 
 type Root struct {
 	Dates []Date `json:"dates"`
+}
+
+func Must(err error, prefix string) {
+	if err != nil {
+		log.Printf("%s\n%+v", prefix, err)
+		os.Exit(1)
+	}
 }

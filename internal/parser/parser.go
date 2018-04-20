@@ -9,7 +9,7 @@ import (
 	"github.com/alfreddobradi/go-mlb-results/internal"
 )
 
-func Parse(date string) (internal.Root, error) {
+func Parse(date []byte) (internal.Root, error) {
 	var root internal.Root
 	url := fmt.Sprintf("https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=%s&hydrate=team", date)
 	response, err := http.Get(url)

@@ -1,80 +1,40 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"os"
-	"strconv"
+	"strings"
 	"time"
 
 	"github.com/alfreddobradi/go-mlb-results/internal"
 	"github.com/alfreddobradi/go-mlb-results/internal/backend"
+	"github.com/alfreddobradi/go-mlb-results/internal/exporter"
 	"github.com/alfreddobradi/go-mlb-results/internal/parser"
-	"github.com/dgraph-io/badger"
 )
 
 func main() {
-
 	backend, err := backend.New("/tmp/mlb", "/tmp/mlb")
-	if err != nil {
-		log.Printf("error: backend: %+v", err)
-		os.Exit(1)
-	}
+	internal.Must(err, "backend: connect:")
 
-	now := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
+	options := getOptions()
 
 	games := make([]internal.Game, 0)
+	games, err = backend.Results(options.Date)
+	internal.Must(err, "backend: read:")
+
 	var counter int
-	err = backend.DB.View(func(txn *badger.Txn) error {
-		it := txn.NewIterator(badger.DefaultIteratorOptions)
-		defer it.Close()
-		prefix := []byte(now)
-		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
-			item := it.Item()
-			v, err := item.Value()
-			if err != nil {
-				return err
-			}
-
-			var g internal.Game
-			err = json.Unmarshal(v, &g)
-
-			games = append(games, g)
-		}
-
-		counterItem, err := txn.Get([]byte("counter"))
-		if err != nil {
-			if err != badger.ErrKeyNotFound {
-				return err
-			}
-
-			counter = 0
-			return nil
-		}
-
-		counterValue, _ := counterItem.Value()
-		counter, _ = strconv.Atoi(string(counterValue))
-
-		return nil
-	})
 
 	if len(games) == 0 {
-		root, err := parser.Parse(now)
-
-		if err != nil {
-			log.Printf("games: save: %+v", err)
-			os.Exit(1)
-		}
+		root, err := parser.Parse(options.Date)
+		internal.Must(err, "parser: read:")
 
 		games, err = backend.Save(root)
-
-		if err != nil {
-			log.Printf("games: save: %+v", err)
-			os.Exit(1)
-		}
+		internal.Must(err, "games: save:")
 
 		counter = 0
+	} else {
+		counter, err = backend.GetCounter()
+		internal.Must(err, "backend: counter: get:")
 	}
 
 	if len(games) == 0 {
@@ -93,6 +53,22 @@ func main() {
 		return nil
 	})
 
-	backend.DB.Close()
+	err = backend.SetCounter(counter)
+	internal.Must(err, "backend: counter: set:")
 
+	backend.DB.Close()
+}
+
+func getOptions() (options internal.Options) {
+	var d string
+	d = os.Getenv("DATE")
+	if len(d) == 0 {
+		d = time.Now().AddDate(0, 0, -1).Format("2006-01-02")
+	}
+	options.Date = []byte(d)
+
+	d = strings.ToLower(os.Getenv("COLORS"))
+	options.Colors = (d == "true" || d == "1")
+
+	return
 }
